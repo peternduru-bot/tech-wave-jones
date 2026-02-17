@@ -37,20 +37,17 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
-// Rate limiting - Fixed to work with proxy
+// Rate limiting - Simplified
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
+    max: 100, // limit each IP to 100 requests
     message: {
         success: false,
-        message: 'Too many requests from this IP, please try again later.'
+        message: 'Too many requests, please try again later.'
     },
-    // Use the X-Forwarded-For header to get the real client IP
-    keyGenerator: (req) => {
-        return req.headers['x-forwarded-for'] || req.ip;
-    }
+    standardHeaders: true,
+    legacyHeaders: false,
 });
-app.use('/api', limiter);
 
 // ========== ROUTES ==========
 
