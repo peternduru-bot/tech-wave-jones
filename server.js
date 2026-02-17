@@ -25,30 +25,10 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(helmet());
 
 // CORS configuration - Allow all localhost ports
+// Simple CORS configuration for production
 app.use(cors({
-    origin: function(origin, callback) {
-        // Allow requests with no origin (like mobile apps, curl, etc)
-        if (!origin) return callback(null, true);
-        
-        // Allow all localhost origins with any port
-        if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
-            return callback(null, true);
-        }
-        
-        // Also allow the specific FRONTEND_URL from .env
-        if (origin === process.env.FRONTEND_URL) {
-            return callback(null, true);
-        }
-        
-        // Allow any origin in development mode (optional - comment out for production)
-        if (process.env.NODE_ENV === 'development') {
-            return callback(null, true);
-        }
-        
-        callback(new Error('CORS not allowed'));
-    },
-    credentials: true,
-    optionsSuccessStatus: 200
+    origin: '*', // Allow all origins temporarily
+    credentials: true
 }));
 
 if (process.env.NODE_ENV === 'development') {
