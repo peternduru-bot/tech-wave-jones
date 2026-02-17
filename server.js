@@ -27,7 +27,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(helmet());
 
-// CORS configuration - Allow only your Netlify frontend
+// CORS configuration
 app.use(cors({
     origin: ['https://dashing-semolina-e8b5ee.netlify.app', 'http://localhost:5503', 'http://localhost:5500'],
     credentials: true
@@ -37,10 +37,10 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
-// Rate limiting - Simplified
+// Rate limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests
+    max: 100,
     message: {
         success: false,
         message: 'Too many requests, please try again later.'
@@ -48,6 +48,7 @@ const limiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
 });
+app.use('/api', limiter);
 
 // ========== ROUTES ==========
 
@@ -56,7 +57,7 @@ app.get('/api/test', (req, res) => {
     res.json({ success: true, message: 'Test route works!' });
 });
 
-// API Routes - registered ONCE
+// API Routes
 app.use('/api/contact', contactRoutes);
 app.use('/api/projects', projectRoutes);
 
