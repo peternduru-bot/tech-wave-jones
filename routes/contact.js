@@ -39,4 +39,4 @@ router.delete('/messages/:id', deleteMessage);
 // Mark message as read
 router.patch('/messages/:id/read', markAsRead);
 
-module.exports = router;cd 
+module.exports = router;
