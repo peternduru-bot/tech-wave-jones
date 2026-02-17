@@ -19,14 +19,17 @@ connectDB();
 
 const app = express();
 
+// Trust proxy - Required for rate limiting behind Render's proxy
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(helmet());
 
-// CORS configuration
+// CORS configuration - Allow only your Netlify frontend
 app.use(cors({
-    origin: '*', // Allow all origins temporarily
+    origin: ['https://dashing-semolina-e8b5ee.netlify.app', 'http://localhost:5503', 'http://localhost:5500'],
     credentials: true
 }));
 
@@ -34,13 +37,17 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
-// Rate limiting
+// Rate limiting - Fixed to work with proxy
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // limit each IP to 100 requests per windowMs
     message: {
         success: false,
         message: 'Too many requests from this IP, please try again later.'
+    },
+    // Use the X-Forwarded-For header to get the real client IP
+    keyGenerator: (req) => {
+        return req.headers['x-forwarded-for'] || req.ip;
     }
 });
 app.use('/api', limiter);
