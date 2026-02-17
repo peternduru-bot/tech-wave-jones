@@ -29,7 +29,7 @@ app.use(helmet());
 
 // CORS configuration
 app.use(cors({
-    origin: ['https://dashing-semolina-e8b5ee.netlify.app', 'http://localhost:5503', 'http://localhost:5500'],
+    origin: ['https://newtech-jones-app.netlify.app', 'https://dashing-semolina-e8b5ee.netlify.app', 'http://localhost:5503', 'http://localhost:5500'],
     credentials: true
 }));
 
