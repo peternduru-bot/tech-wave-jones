@@ -24,8 +24,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(helmet());
 
-// CORS configuration - Allow all localhost ports
-// Simple CORS configuration for production
+// CORS configuration
 app.use(cors({
     origin: '*', // Allow all origins temporarily
     credentials: true
@@ -46,17 +45,14 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
+// ========== ROUTES ==========
 
-// TEST ROUTE - Add this right after your middleware
+// Test route
 app.get('/api/test', (req, res) => {
     res.json({ success: true, message: 'Test route works!' });
 });
 
-// Your existing routes
-app.use('/api/contact', contactRoutes);
-app.use('/api/projects', projectRoutes);
-
-// Routes
+// API Routes - registered ONCE
 app.use('/api/contact', contactRoutes);
 app.use('/api/projects', projectRoutes);
 
@@ -71,7 +67,7 @@ app.get('/health', (req, res) => {
     });
 });
 
-// 404 handler
+// 404 handler - must be LAST
 app.use('*', (req, res) => {
     res.status(404).json({
         success: false,
