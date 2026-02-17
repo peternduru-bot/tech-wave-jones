@@ -46,6 +46,16 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
+
+// TEST ROUTE - Add this right after your middleware
+app.get('/api/test', (req, res) => {
+    res.json({ success: true, message: 'Test route works!' });
+});
+
+// Your existing routes
+app.use('/api/contact', contactRoutes);
+app.use('/api/projects', projectRoutes);
+
 // Routes
 app.use('/api/contact', contactRoutes);
 app.use('/api/projects', projectRoutes);
